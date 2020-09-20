@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.njust.mapper.UserMapper">
+    <!-- 用户登录的方法 -->
+    <select id="login" parameterType="Users" resultType="Users">
+        select * from users where username = #{userName}
+    </select>
+<!--    在users表中插入数据-->
+    <insert id="insertUser" parameterType="Users">
+        insert into Users(userName,password,address,
+        email,avatar,userState,phoneNum,accountID,score) values
+        (#{userName},#{password},#{address},#{email},#{avatar},#{userState},#{phoneNum},
+        #{accountID},#{score})
+    </insert>
+<!--    更新用户信息-->
+    <update id="updateInfo" parameterType="Users">
+        update Users set
+        <if test="userName!=null">
+            and userName=#{userName}
+        </if>
+        <if test="password!=null">
+            and userName=#{password}
+        </if>
+        <if test="address!=null">
+            and userName=#{address}
+        </if>
+        <if test="email!=null">
+            and email=#{email}
+        </if>
+        <if test="phoneNum!=null">
+            and phoneNum=#{phoneNum}
+        </if>
+        <if test="accountID!=null">
+            and phoneNum=#{accountID}
+        </if>
+        <if test="score!=null">
+            and score=#{score}
+        </if>
+        where userID=#{userID}
+    </update>
+</mapper>
