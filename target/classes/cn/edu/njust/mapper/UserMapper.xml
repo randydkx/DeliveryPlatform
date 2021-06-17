@@ -4,7 +4,7 @@
 
 <mapper namespace="cn.edu.njust.mapper.UserMapper">
     <!-- 用户登录的方法 -->
-    <select id="login" parameterType="Users" resultType="Users">
+    <select id="selectByName" parameterType="Users" resultType="Users">
         select * from users where username = #{userName}
     </select>
 <!--    在users表中插入数据-->
@@ -14,30 +14,39 @@
         (#{userName},#{password},#{address},#{email},#{avatar},#{userState},#{phoneNum},
         #{accountID},#{score})
     </insert>
-<!--    更新用户信息-->
-    <update id="updateInfo" parameterType="Users">
-        update Users set
-        <if test="userName!=null">
-            and userName=#{userName}
-        </if>
-        <if test="password!=null">
-            and userName=#{password}
-        </if>
-        <if test="address!=null">
-            and userName=#{address}
-        </if>
-        <if test="email!=null">
-            and email=#{email}
-        </if>
-        <if test="phoneNum!=null">
-            and phoneNum=#{phoneNum}
-        </if>
-        <if test="accountID!=null">
-            and phoneNum=#{accountID}
-        </if>
-        <if test="score!=null">
-            and score=#{score}
-        </if>
-        where userID=#{userID}
+<!--  更新头像  -->
+    <update id="updateAvatar" parameterType="Users">
+       update Users set avatar=#{avatar} where userID=#{userID}
     </update>
+
+<!--    更新用户所有的信息-->
+    <update id="updateAllInfo" parameterType="Users">
+        update Users set
+        userName=#{userName},password=#{password},address=#{address},
+        email=#{email},avatar=#{avatar},userState='registered',phoneNum=#{phoneNum},
+        accountID=#{accountID},score=#{score} where userID=#{userID}
+    </update>
+
+<!--    通过userID获取消费者的信息-->
+    <select id="selectById" parameterType="int" resultType="Users">
+        select * from Users where userID=#{value}
+    </select>
+
+<!--    更新分数-->
+    <update id="updateScore" parameterType="java.util.Map">
+        update users set score=${score}
+        where userID = ${userID}
+    </update>
+
+<!--    通过手机号查找用户-->
+    <select id="selectByPhone" parameterType="String" resultType="Users">
+        select * from Users where phoneNum=#{phoneNum}
+    </select>
+    
+<!--    用户发表评论-->
+    <insert id="makeReview" parameterType="Review">
+        insert into review(`userID`,`content`,`time`,`resID`)
+        values(#{userID},#{content},#{time},#{resID})
+    </insert>
+
 </mapper>

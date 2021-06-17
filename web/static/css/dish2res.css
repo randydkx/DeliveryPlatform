@@ -1,0 +1,57 @@
+.banner-body-right2{
+	float: left;
+}
+.banner-body-right21 img{
+	width: 150px;
+	border-radius: 50%;
+}
+.banner-body-right22{
+	padding-top: 30px;
+}
+.banner-body-right22 p{
+	font-size: 10px;
+	color: #888888;
+}
+.banner-body-right3{
+	/*background-color: #5CB85C;*/
+	padding-top: 5px;
+}
+/*.banner-body-right3:hover {*/
+/*    background: #E0BD62;*/
+/*}*/
+/*.banner-body-right3:hover{*/
+/*	color:white;*/
+/*}*/
+.banner-body-right31 img{
+	width: 150px;
+}
+.banner-body-right32 button{
+	float: right;
+}
+.banner-body-right33{
+	font-size: 15px;
+	color: #888888;
+}
+
+
+
+.box{
+	/*border: red solid 1px;*/
+	height: 30px;
+	width: 89px;
+	float:right;
+	text-align: center;
+}
+.box input{
+	width: 40px;
+	text-align: center;
+}
+ul{
+	float:right;
+	list-style: none;
+}
+ul li{
+	display: block;
+	float: left;
+	vertical-align: middle;
+}

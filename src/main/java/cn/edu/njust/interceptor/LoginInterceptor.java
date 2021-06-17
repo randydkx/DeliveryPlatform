@@ -3,8 +3,10 @@ package cn.edu.njust.interceptor;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.jms.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class LoginInterceptor implements HandlerInterceptor {
 
@@ -13,7 +15,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String url=request.getRequestURI();
         if(!(url.toLowerCase().contains("login"))){
-            if(request.getSession().getAttribute("user")!=null)
+            HttpSession session = request.getSession();
+
+            if(session.getAttribute("user")!=null  || session.getAttribute("rest")!=null ||
+                    session.getAttribute("manager")!=null)
                 return true;
             else{
                 System.out.println("LoginInterceptor->转移url->"+request.getContextPath()+"/user/toLogin.do");

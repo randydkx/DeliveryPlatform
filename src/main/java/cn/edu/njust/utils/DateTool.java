@@ -1,4 +1,5 @@
 package cn.edu.njust.utils;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,7 +12,7 @@ public class DateTool {
         SimpleDateFormat sdf = new SimpleDateFormat(parttern);
         Date date = null;
         try {
-            sdf.parse(dateStr);
+            date=sdf.parse(dateStr);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -34,9 +35,17 @@ public class DateTool {
 
 
     public static void main(String[] args) throws Exception{
-        System.out.println(Date2Str(new Date(), "yyyy-MM-dd"));
-        System.out.println(Date2Str(new Date(),"yyyy-MM-dd  HH:mm:ss"));
+//        System.out.println(Date2Str(new Date(), "yyyy-MM-dd"));
+//        System.out.println(Date2Str(new Date(),"yyyy-MM-dd  HH:mm:ss"));
+        Timestamp time=new Timestamp(new Date().getTime());
+        String timeString=  time.toString();
+        System.out.println(Date2Str(new Date(time.getTime()),"yyyy-MM-dd HH:mm:ss"));
+        Date date = str2Date(timeString,"yyyy-MM-dd HH:mm:ss");
+        System.out.println(date);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String a = sdf.format(date);
+//        System.out.println(a);
+//        System.out.println(str2Date("2019-01-01","yyyy-MM-dd").toString());
     }
-
 }
 

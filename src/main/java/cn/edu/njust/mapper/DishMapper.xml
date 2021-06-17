@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.njust.mapper.DishMapper">
+    <select id="findByPage" parameterType="java.util.Map" resultType="Dish">
+        select dish.* from
+        dish
+        <if test="resTypeID!=null">
+            ,restaurant
+        </if>
+        <where>
+            1=1
+            <if test="dishID!=null">
+                and dishID=${dishID}
+            </if>
+<!--            <if test="dishTypeID!=null">-->
+<!--                and dishTypeID=${dishTypeID}-->
+<!--            </if>-->
+<!--            <if test="remain!=null">-->
+<!--                and remain=${remain}-->
+<!--            </if>-->
+            <if test="name!=null">
+                and name=#{name}
+            </if>
+            <if test="resID!=null">
+                and resID=#{resID}
+            </if>
+            <if test="resTypeID!=null">
+                and dish.resID=restaurant.resID
+                and restaurant.resTypeID=${resTypeID}
+            </if>
+
+        </where>
+    </select>
+    <select id="queryDishTypeByID" parameterType="int" resultType="String">
+        select dishType.dishTypeName
+        from dishType
+        <where>
+            dishTypeID=#{value}
+        </where>
+    </select>
+
+    <update id="updateDishInfo" parameterType="Dish" >
+        update dish set
+        dishTypeID=#{dishTypeID},
+        remain=#{remain},
+        description=#{description},
+        price=#{price},
+        name=#{name},
+        discount=#{discount}
+        where dishID=#{dishID}
+    </update>
+
+    <select id="findDishByDishID" parameterType="int" resultType="Dish">
+        select * from Dish where dishID = #{value}
+    </select>
+</mapper>

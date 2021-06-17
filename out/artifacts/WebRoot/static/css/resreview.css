@@ -1,0 +1,89 @@
+.comment-row-item {
+	position: relative;
+	padding: 12px 15px 12px 61px;
+	min-height: 32px
+}
+
+.comment-row-item p {
+	margin: 0
+}
+
+.comment-row-item .avatar-preview {
+	position: absolute;
+	left: 15px;
+	top: 12px;
+		width: 40px;
+	height: 40px;	
+}
+
+.comment-row-item .avatar-preview img{
+	width: 40px;
+	height: 40px;	
+}
+.comment-row-item .comment-row-item-header {
+	line-height: 18px;
+	margin: 0 0 6px
+}
+
+.comment-row-item .comment-row-item-header .tbl-cell {
+	vertical-align: top
+}
+
+.comment-row-item .comment-row-item-header .tbl-cell-name {
+	font-weight: 600
+}
+
+.comment-row-item .comment-row-item-header .tbl-cell-date {
+	position: absolute;
+	top: 20px;
+	right: 80px;
+	text-align: right;
+	width: 30px;
+	/*padding-left: 200px;*/
+	white-space: nowrap;
+	font-size: .875rem;
+	color: #919fa9
+}
+
+.comment-row-item .comment-row-item-content {
+	padding: 0 45px 6px 0;
+	position: relative
+}
+
+.comment-row-item .comment-row-item-action {
+	border: none;
+	background: 0 0;
+	color: #919fa9;
+	position: absolute;
+	top: 2px
+}
+
+.comment-row-item .comment-row-item-action:hover {
+	color: #00a8ff
+}
+
+.comment-row-item .comment-row-item-action.edit {
+	right: 25px
+}
+
+.comment-row-item .comment-row-item-action.del {
+	right: 0
+}
+
+.comment-row-item .comment-row-item-action.del:hover {
+	color: #fa424a
+}
+
+.comment-row-item .comment-row-item-reply {
+	display: inline-block;
+	vertical-align: top;
+	margin: 0 20px 0 0;
+	font-size: 1rem;
+	text-decoration: none;
+	color: #919fa9;
+	border: none
+}
+
+.comment-row-item .comment-row-item-reply:hover {
+	color: #00a8ff
+}

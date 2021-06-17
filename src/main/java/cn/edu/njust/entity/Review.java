@@ -1,11 +1,13 @@
 package cn.edu.njust.entity;
+import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
-public class Review {
+public class Review implements Serializable {
     private int reviewID;
     private int userID;
     private String content;
-    private Date time;
-    private int resID;
+    private Timestamp time;
+    private String resID;
 
     public int getReviewID() {
         return reviewID;
@@ -31,19 +33,19 @@ public class Review {
         this.content = content;
     }
 
-    public Date getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 
-    public int getResID() {
+    public String getResID() {
         return resID;
     }
 
-    public void setResID(int dishID) {
+    public void setResID(String resID) {
         this.resID = resID;
     }
 }

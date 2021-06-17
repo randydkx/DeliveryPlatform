@@ -1,9 +1,12 @@
 package cn.edu.njust.entity;
 
-public class Manager {
+import java.io.Serializable;
+
+public class Manager implements Serializable {
     private String managerID;
     private String password;
     private String accountID;
+    private String image;
 
     public String getManagerID() {
         return managerID;
@@ -15,6 +18,14 @@ public class Manager {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public void setPassword(String password) {

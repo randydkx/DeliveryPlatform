@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.njust.mapper.OrderMapper">
+
+    <!--消费者查找进行中的订单-->
+    <select id="CurOrder" parameterType="QueryOrder" resultType="cn.edu.njust.entity.Orders">
+        select * from Orders where userID=#{ID} and state!=#{state1} and state!=#{state2} and state!=#{state3}
+    </select>
+
+    <!--获取订单的状态-->
+    <select id="ResOrderRej" parameterType="int" resultType="java.lang.String">
+        select state from Orders where orderID=#{orderID}
+     </select>
+
+    <!--查找一个订单的订单项-->
+    <select id="OrderItem" parameterType="int" resultType="cn.edu.njust.entity.OrderItem">
+        select * from orderItem where orderID=#{orderID}
+    </select>
+
+    <!--消费者查看已经完成的订单-->
+    <select id="HistoryOrder" parameterType="QueryOrder" resultType="cn.edu.njust.entity.Orders">
+        select * from Orders where userID=#{ID}
+        and state!=#{state1}
+        and state!=#{state2}
+        and state!=#{state3}
+    </select>
+
+    <!--消费者对订单进行评价-->
+    <insert id="AddReview" parameterType="Review">
+     insert into Review(userID,content,time,resID)
+     values(#{userID},#{content},#{time},#{resID})
+    </insert>
+
+    <!--改变订单状态-->
+    <update id="ChangeOS" parameterType="ChangeOrderState">
+    update Orders set state=#{state} where orderID=#{orderID}
+    </update>
+
+<!--    改变订单的状态-->
+    <update id="changeOrderState" parameterType="java.util.Map">
+        update orders set state=#{state} where orderID = ${orderID}
+    </update>
+
+    <!--餐馆查看已完成的订单-->
+    <select id="ResHistoryOrder" parameterType="QueryOrder" resultType="Orders">
+        select * from Orders where resID=#{ID} and state!=#{state1} and state!=#{state2} and state!=#{state3}
+    </select>
+
+    <!--餐馆查看进行中的订单-->
+    <select id="ResCurOrder" parameterType="QueryOrder" resultType="Orders">
+        select *  from Orders where resID=#{ID} and state!=#{state1} and state!=#{state2} and state!=#{state3}
+    </select>
+
+    <!--点餐时创建新的订单-->
+    <insert id="AddNewOrder" parameterType="Orders">
+     insert into Orders(userID,resID,orderTime,state)values(#{userID},#{resID},#{orderTime},#{state})
+    </insert>
+
+    <!--添加订单的订单项-->
+    <insert id="AddOrderItem" parameterType="OrderItem">
+        insert into OrderItem(dishID,orderID,count)value(#{dishID},#{orderID},#{count})
+    </insert>
+
+    <!--获取最大的orderID-->
+    <select id="maxOrderID" resultType="int">
+        select orderID from Orders order by orderID desc limit 1
+    </select>
+
+    <!--查找一个订单项对应的菜品-->
+    <select id="ItemToDish" parameterType="OrderItem" resultType="Dish">
+        select * from dish where dishID=#{dishID}
+    </select>
+
+    <!--订单完成后改变菜品销量、余量-->
+    <update id="SaleRemainChange" parameterType="OrderDishes">
+        update dish set remain=#{remain},saleAmount=#{saleAmount} where dishID=#{dishID}
+    </update>
+
+<!--    查询用户在配送中订单-->
+    <select id="queryDeliveryOrder" parameterType="int" resultType="Orders">
+        select * from
+        orders where userID=#{value} and state='indelivery'
+    </select>
+
+<!--    查看用户所有未评价订单-->
+    <select id="queryNoReviewOrder" parameterType="int" resultType="Orders">
+          select * from
+        orders where userID=#{value} and state='noreview'
+    </select>
+
+<!--    查询已经支付的订单-->
+    <select id="queryAlreadyPayOrder" parameterType="int" resultType="Orders">
+        select * from
+        orders where userID=#{value} and state = 'alreadypay';
+    </select>
+
+<!--    通过订单id查找订单所有信息，封装在实体-->
+<!--    返回值映射器-->
+    <resultMap id="orderFullDetailResultMap" type="cn.edu.njust.entity.QueryOrderFullDetail">
+        <result column="orderID" property="orderID"/>
+        <result column="userID" property="userID"/>
+        <result column="resID" property="resID"/>
+        <result column="orderTime" property="orderTime"/>
+        <result column="state" property="state"/>
+<!--处理list类型参数-->
+        <collection property="orderItems" ofType="cn.edu.njust.entity.ExtendOrderItem">
+            <id column="orderItemID" property="orderItemID"/>
+            <result column="dishID" property="dishID"/>
+            <result column="orderID" property="orderID"/>
+            <result column="count" property="count"/>
+<!--处理包装类型参数-->
+            <association property="orderedDish" javaType="cn.edu.njust.entity.Dish">
+                <id column="dishID" property="dishID"/>
+                <result column="dishTypeID" property="dishTypeID"/>
+                <result column="remain" property="remain"/>
+                <result column="startTime" property="startTime" javaType="java.sql.Timestamp"/>
+                <result column="description" property="description"/>
+                <result column="price" property="price"/>
+                <result column="name" property="name"/>
+                <result column="resID" property="resID"/>
+                <result column="discount" property="discount"/>
+                <result column="saleAmount" property="saleAmount"/>
+                <result column="score" property="score"/>
+                <result column="image" property="image"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="queryOrderFullDetail" parameterType="int" resultMap="orderFullDetailResultMap">
+        select
+        orders.*,
+        orderItem.orderItemID,
+        orderItem.dishID,
+        orderItem.count,
+        dish.dishTypeID,
+        dish.remain,
+        dish.description,
+        dish.startTime,
+        dish.price,
+        dish.name,
+        dish.discount,
+        dish.saleAmount,
+        dish.score,
+        dish.image
+        from
+        orders,
+        orderItem,
+        dish
+        <where>
+            orderItem.orderID=orders.orderID
+            and dish.dishID=orderItem.dishID
+            and orderItem.orderID=#{value}
+        </where>
+    </select>
+
+<!--    更新单个菜品的信息-->
+    <update id="updateSingleDishInfo" parameterType="java.util.Map">
+        update dish set
+        remain=remain-(${count}),saleAmount=saleAmount+(${count})
+        where dishID = ${dishID}
+    </update>
+
+    <select id="queryByOrderID" parameterType="int" resultType="Orders">
+        select * from orders where orderID=#{value}
+    </select>
+</mapper>

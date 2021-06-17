@@ -2,5 +2,69 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.edu.njust.mapper.ManagerMapper">
+    <select id="selectByID" parameterType="String" resultType="Manager">
+        select * from manager where managerID=#{managerID}
+    </select>
 
+    <resultMap id="restResultMap" type="cn.edu.njust.entity.Restaurant">
+        <id property="resID" column="resID"/>
+        <result property="locate" column="locate"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="accountID" column="accountID"/>
+        <result property="image" column="image"/>
+        <result property="resPhone" column="resPhone"/>
+        <result property="resTypeID" column="resTypeID"/>
+        <result property="balance" column="balance"/>
+        <result property="accepted" column="accepted"/>
+        <result property="score" column="score"/>
+        <result property="managerID" column="managerID"/>
+        <association property="resType" javaType="cn.edu.njust.entity.ResType">
+            <id property="resTypeID" column="resTypeID"/>
+            <result property="resTypeName" column="resTypeName"/>
+        </association>
+    </resultMap>
+    <select id="listAllAcceptedRest" parameterType="String" resultMap="restResultMap">
+       select
+        restaurant.*,resType.resTypeName
+        from
+        restaurant,resType
+        where accepted=1 and
+        managerID=#{value} and
+        restaurant.resTypeID=resType.resTypeID
+    </select>
+
+    <select id="listAllNotAccepted" resultMap="restResultMap">
+        select
+        restaurant.*,resType.resTypeName
+        from
+        restaurant,resType
+        where accepted=0 and
+        restaurant.resTypeID=resType.resTypeID
+    </select>
+
+    <select id="queryOneNotAccepted" parameterType="String" resultType="Restaurant">
+        select * from restaurant where resID=#{value}
+    </select>
+
+    <update id="acceptOneRest" parameterType="String">
+        update restaurant set accepted=1 where resID=#{value}
+    </update>
+
+    <update id="rejectOneRest" parameterType="String" >
+        update restaurant set accepted=2 where resID=#{value}
+    </update>
+
+    <select id="queryNumOfNotAccepted" resultType="int">
+        select count(*) from restaurant where accepted=0
+    </select>
+
+    <select id="queryBankAmount" parameterType="String" resultType="java.math.BigDecimal">
+        select amount from
+        Bank
+        where
+        accountID=#{value}
+    </select>
 </mapper>

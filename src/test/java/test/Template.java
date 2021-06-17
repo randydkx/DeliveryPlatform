@@ -2,15 +2,12 @@ package test;
 
 import cn.edu.njust.entity.Users;
 import cn.edu.njust.mapper.UserMapper;
-import cn.edu.njust.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Template {
-//    service层实例
-    public UserService userService;
 //    spring+springMVC环境
     private ApplicationContext applicationContext ;
 //    加载spring配置文件

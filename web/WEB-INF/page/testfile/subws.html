@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+    <div>
+        <button id="connect" onclick="connect();">连接</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">断开连接</button>
+    </div>
+    <div id="conversationDiv">
+        <label>输入你的userId</label><input type="text" id="userId" />
+        <button id="subMsg" onclick="subMsg();">订阅消息</button>
+        <p id="response"></p>
+        <p id="response1"></p>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var stompClient = null;
+    //此值有服务端传递给前端,实现方式没有要求
+    //var userId = [[${userId}]];
+
+    function setConnected(connected) {
+        document.getElementById('connect').disabled = connected;
+        document.getElementById('disconnect').disabled = !connected;
+        document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
+        $('#response').html();
+    }
+
+    function connect() {
+        // 注意 SockJS()中传入的地址  一定要正确
+        var socket = new SockJS('/exam-web/endpointWisely');
+        stompClient = Stomp.over(socket);//2创建STOMP协议的webSocket客户端。
+        stompClient.connect({}, function(frame) {//3连接webSocket的服务端。
+            setConnected(true);
+            console.log('开始进行连接Connected: ' + frame);
+        });
+    }
+
+    //订阅消息
+    function subMsg() {
+        var userId = $('#userId').val();
+        console.log(userId);
+        $.ajax({
+            type: 'GET',
+            url: '/exam-web/onlineExam/insert?userId='+userId,
+            success: function (data) {
+                console.log(data);
+                //4通过stompClient.subscribe（）订阅服务器的目标是'/user/' + userId + '/msg'接收一对一的推送消息,其中userId由服务端传递过来,用于表示唯一的用户,通过此值将消息精确推送给一个用户
+                stompClient.subscribe('/user/' + userId + '/msg', function(respnose){
+                    console.log(respnose);
+                    showResponse1(JSON.parse(respnose.body).responseMessage);
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>

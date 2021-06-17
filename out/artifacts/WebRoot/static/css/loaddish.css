@@ -1,0 +1,17 @@
+input[type="file"]{
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 150px;
+        opacity: 0;
+        cursor: pointer;
+}
+.pic{
+	background: white;
+	width: 150px;
+	height: 150px;
+	position: relative;
+}
+.info{
+	box-shadow:0px 2px 2px 1px rgba(0,0,0,0.3);
+}

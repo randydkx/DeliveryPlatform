@@ -17,7 +17,7 @@ public interface BaseService<T> {
      * @param id
      * @return
      */
-    T findById(Long id);
+    T findById(int id);
 
     /**
      * 添加
@@ -31,7 +31,7 @@ public interface BaseService<T> {
      *
      * @param id
      */
-    void delete(Long id);
+    void delete(int id);
 
     /**
      * 修改

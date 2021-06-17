@@ -1,6 +1,8 @@
 package cn.edu.njust.entity;
 
-public class ResType {
+import java.io.Serializable;
+
+public class ResType implements Serializable {
     private int resTypeID;
     private String resTypeName;
 

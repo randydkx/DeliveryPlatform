@@ -1,0 +1,10 @@
+.msg{
+	width: 12px;
+	height: 26px;
+	float: left;
+	margin-right: 10px;
+	background: #E0BD62;
+}
+.body-right .card-header a{
+	float: right;
+}

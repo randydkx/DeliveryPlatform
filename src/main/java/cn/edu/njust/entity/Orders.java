@@ -1,11 +1,21 @@
 package cn.edu.njust.entity;
+import java.io.Serializable;
 import java.util.Date;
-public class Orders {
+public class Orders implements Serializable {
     private int orderID;
     private int userID;
     private String resID;
     private Date orderTime;
     private String state;
+    private double totalPrice;
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
     public int getOrderID() {
         return orderID;

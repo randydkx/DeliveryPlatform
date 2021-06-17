@@ -1,8 +1,9 @@
 package cn.edu.njust.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Dish {
+public class Dish implements Serializable {
     private int dishID;
     private int dishTypeID;
     private int remain;
@@ -11,9 +12,18 @@ public class Dish {
     private double price;
     private String name;
     private String resID;
+    private String image;
     private double discount;
     private int saleAmount;
     private int score;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public double getPrice(){return price;}
     public void setPrice(double price){this.price=price;}

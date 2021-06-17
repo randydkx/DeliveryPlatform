@@ -1,6 +1,8 @@
 package cn.edu.njust.entity;
 
-public class DishType {
+import java.io.Serializable;
+
+public class DishType implements Serializable {
     private int dishTypeID;
     private String dishTypeName;
 

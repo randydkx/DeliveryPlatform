@@ -15,10 +15,10 @@
         <package name="cn.edu.njust.entity"/>
     </typeAliases>
 <!--    分页功能实现   -->
+
     <plugins>
         <plugin interceptor="com.github.pagehelper.PageHelper">
             <property name="dialect" value="mysql"/>
         </plugin>
     </plugins>
-
 </configuration>

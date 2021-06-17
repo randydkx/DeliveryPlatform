@@ -1,8 +1,9 @@
 package cn.edu.njust.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class Bank {
+public class Bank implements Serializable {
     private String accountID;
     private BigDecimal amount;
     private String password;

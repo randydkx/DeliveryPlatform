@@ -1,6 +1,8 @@
 package cn.edu.njust.entity;
 
-public class Restaurant {
+import java.io.Serializable;
+
+public class Restaurant implements Serializable {
     private String resID;
     private String locate;
     private String name;
@@ -12,8 +14,19 @@ public class Restaurant {
     private double balance;
     private int accepted;
     private int score;
+    private String image;
     private String managerID;
     private String accountID;
+
+    private ResType resType;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getAccountID() {
         return accountID;

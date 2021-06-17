@@ -1,6 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="cn.edu.njust.mapper.RestMapper">
 
+
+    <!-- 根据餐馆resId查询全部菜品信息-->
+    <select id="ListDish" parameterType="java.lang.String" resultType="cn.edu.njust.entity.Dish">
+        select * from Dish where resID = #{resID} and remain>0
+    </select>
+
+    <!--查询评分最高的5家餐馆-->
+    <select id="Top3"  resultType="cn.edu.njust.entity.Restaurant">
+        select * from Restaurant order by score desc limit 3
+    </select>
+    <!--按照菜品类别名查找类别标号-->
+    <select id="dishTypeID" parameterType="java.lang.String" resultType="int">
+        select dishTypeID from dishtype where dishTypeName=#{dishTypeName}
+    </select>
+    <!--按照菜品类别标号查询餐馆-->
+    <select id="ListByType" parameterType="int" resultType="cn.edu.njust.entity.Dish">
+        select * from dish where dishTypeID=#{dishTypeID}
+    </select>
+
+    <!--查询评分最高的餐馆信息-->
+    <select id="TopScore" resultType="cn.edu.njust.entity.Restaurant">
+        select * from Restaurant order by score desc limit 1
+    </select>
+
+    <!--根据菜品ID查询一条菜品的信息-->
+    <select id="OneDishInfo" parameterType="int" resultType="cn.edu.njust.entity.Dish">
+        select * from Dish where dishID=#{dishID}
+    </select>
+
+    <select id="findAll" resultType="Restaurant">
+        select * from restaurant
+    </select>
+
+    <!--修改某一条菜品的信息-->
+    <update id="OneDishChange" parameterType="cn.edu.njust.entity.Dish">
+        update Dish set
+        dishTypeID = #{dishTypeID},
+        remain = #{remain},
+        description = #{description},
+        price = #{price},
+        name = #{name},
+        discount = #{discount}
+        where dishID = #{dishID}
+    </update>
+
+    <!--添加一条菜品信息 -->
+    <insert id="LoadDish" parameterType="cn.edu.njust.entity.Dish">
+        insert into Dish(dishTypeID,remain,description,startTime,
+        price,name,resID,discount,image)
+        values
+        (#{dishTypeID},#{remain},#{description},#{startTime},
+        #{price},#{name},#{resID},#{discount},#{image})
+    </insert>
+
+    <!--保存餐馆注册信息 初始状态为未通过申请-->
+    <insert id="ResRegister" parameterType="cn.edu.njust.entity.Restaurant">
+        insert into Restaurant
+        (resID,locate,name,
+        password,startTime,endTime,accountID,
+        resPhone,resTypeID,managerID,image)
+        values
+        (#{resID},#{locate},
+        #{name},#{password},
+        #{startTime},#{endTime},
+        #{accountID},#{resPhone},
+        #{resTypeID},#{managerID},#{image})
+    </insert>
+
+    <!--根据手机号查找餐馆信息，判断能否注册 查询非空时可以查看申请状态-->
+    <select id="ResRegisterConfirm" parameterType="java.lang.String" resultType="cn.edu.njust.entity.Restaurant">
+        select * from Restaurant where resPhone=#{resPhone}
+    </select>
+
+    <!--获取最大餐馆识别码-->
+    <select id="MaxResID" resultType="cn.edu.njust.entity.Restaurant">
+        select *  from Restaurant order by resID desc limit 1
+    </select>
+
+    <select id="selectResByID" parameterType="String" resultType="Restaurant">
+        select * from restaurant where resID=#{resID}
+    </select>
+
+    <resultMap id="reviewMap" type="cn.edu.njust.entity.QueryReview">
+        <id property="reviewID" column="reviewID"/>
+        <result property="userID" column="userID"/>
+        <result property="content" column="content"/>
+        <result property="time" column="time"/>
+        <result property="resID" column="resID"/>
+        <result property="avatar" column="avatar"/>
+        <result property="userName" column="userName"/>
+    </resultMap>
+    <!--查找餐馆的评论-->
+    <select id="FindResReview" parameterType="String" resultMap="reviewMap">
+        select review.*,userName,avatar
+        from review,users
+        <where>
+            users.userID=review.userID
+            and review.resID=#{value}
+        </where>
+    </select>
+
+<!--    添加点赞数量-->
+    <update id="addLove" parameterType="String">
+        update restaurant set score=score+1 where resID=#{value}
+    </update>
+
+<!--    餐馆在指定时间之内的的所有订单-->
+    <select id="salesInAMonth" parameterType="QueryStatisticInfo" resultType="Orders">
+        select * from
+        orders
+        where resID=#{resID}
+        and (orderTime between #{startTime} and #{endTime})
+    </select>
+
+<!--    查询一个餐馆不同类别的菜的类别-->
+    <select id="distinctDishType" parameterType="String" resultType="String">
+        select distinct dishTypeName from dishtype left join dish
+        on dishtype.dishTypeID=dish.dishTypeID
+        where dish.resID=#{resID}
+    </select>
+<!--通过类型编号得到类型名称-->
+    <select id="queryDishTypeByID" parameterType="int" resultType="String">
+        select dishType.dishTypeName
+        from dishType
+        where dishType.dishTypeID=#{value}
+    </select>
+
+<!--    查找商家的所有未确认配送的订单以及确认送达的订单-->
+    <select id="queryOrdersByCon" parameterType="java.util.Map" resultType="Orders">
+        select * from
+        orders
+        where resID=#{resID} and state=#{state}
+    </select>
+
+    <select id="dishTypeAndMoney" parameterType="String" resultType="QueryDishTypeAndMoney">
+        select restaurant.resID,dishType.dishTypeName,
+               SUM((dish.price*dish.discount/10)*orderItem.count) as  moneyToOneDishType,
+               sum(orderItem.count) as countToOneDishType
+        from
+            restaurant,orders,orderItem,dish,dishtype
+        where (
+                          restaurant.resID=#{resID}
+                      and restaurant.resID=orders.resID
+                      and orders.orderID=orderItem.orderID
+                      and orderItem.dishID=dish.dishID
+                      and dishtype.dishTypeID=dish.dishTypeID
+                      and (orders.state='alreadypay' or orders.state='indelivery' or orders.state='noreview' or orders.state='alreadyreview')
+                  )
+        group by dishTypeName
+    </select>
+
+    <select id="queryByCondition" parameterType="java.util.Map" resultType="Restaurant">
+        select * from restaurant
+        <where>
+            <if test="locate!=null">
+                and locate=#{locate}
+            </if>
+            <if test="name!=null">
+                and name=#{name}
+            </if>
+            <if test="resPhone!=null">
+                and resPhone=#{resPhone}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryDishTypeIDByName" resultType="int" parameterType="String">
+        select dishTypeID from dishType where dishTypeName=#{value}
+    </select>
+
+    <update id="updateRestBalance" parameterType="Restaurant">
+        update restaurant set balance=#{balance}
+        <where>
+            resID=#{resID}
+        </where>
+    </update>
 </mapper>
